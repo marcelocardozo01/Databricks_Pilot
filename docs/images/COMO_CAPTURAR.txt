@@ -1,0 +1,6 @@
+Coloque aqui as capturas de tela referenciadas no README:
+
+- pipeline.png  : Jobs & Pipelines > medallion_pipeline, diagrama com as quatro tabelas (clique em silver_trips para mostrar as expectations no painel lateral).
+- dashboard.png : o dashboard "Medalhão NYC Taxi" publicado, página inteira.
+
+Dica: use a tecla Win+Shift+S no Windows, salve como PNG e mantenha os nomes acima.

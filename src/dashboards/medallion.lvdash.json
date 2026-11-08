@@ -42,7 +42,7 @@
               "lines": [
                 "# Corridas de táxi NYC — arquitetura medalhão\n",
                 "\n",
-                "KPIs e gráfico por hora lidos da camada **silver**; receita diária e ranking de CEPs lidos da camada **gold**. Clique em uma barra ou ponto para filtrar os demais widgets."
+                "KPIs do último dia (com tendência diária) e gráfico por hora lidos da camada **silver**; receita diária e ranking de CEPs lidos da camada **gold**. Clique em uma barra ou ponto para filtrar os demais widgets."
               ]
             }
           },
@@ -73,7 +73,7 @@
                 },
                 "period": {"fieldName": "daily(pickup_date)"}
               },
-              "frame": {"showTitle": true, "title": "Corridas válidas"}
+              "frame": {"showTitle": true, "title": "Corridas no último dia"}
             }
           },
           "position": {"x": 0, "y": 2, "width": 3, "height": 3}
@@ -103,7 +103,7 @@
                 },
                 "period": {"fieldName": "daily(pickup_date)"}
               },
-              "frame": {"showTitle": true, "title": "Receita total"}
+              "frame": {"showTitle": true, "title": "Receita do último dia"}
             }
           },
           "position": {"x": 3, "y": 2, "width": 3, "height": 3}
@@ -133,7 +133,7 @@
                 },
                 "period": {"fieldName": "daily(pickup_date)"}
               },
-              "frame": {"showTitle": true, "title": "Tarifa média"}
+              "frame": {"showTitle": true, "title": "Tarifa média do último dia"}
             }
           },
           "position": {"x": 6, "y": 2, "width": 3, "height": 3}
@@ -164,7 +164,7 @@
                 },
                 "period": {"fieldName": "daily(pickup_date)"}
               },
-              "frame": {"showTitle": true, "title": "Duração média"}
+              "frame": {"showTitle": true, "title": "Duração média do último dia"}
             }
           },
           "position": {"x": 9, "y": 2, "width": 3, "height": 3}
