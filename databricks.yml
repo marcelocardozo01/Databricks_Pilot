@@ -23,19 +23,21 @@ targets:
     mode: development
     default: true
     workspace:
-      host: https://dbc-3ab61774-912c.cloud.databricks.com
+      host: https://dbc-62bdf2a3-1579.cloud.databricks.com
+      profile: FREE
     variables:
       catalog: workspace
       schema: ${workspace.current_user.short_name}
   prod:
     mode: production
     workspace:
-      host: https://dbc-3ab61774-912c.cloud.databricks.com
-      # We explicitly deploy to /Workspace/Users/marcelo.cardozodataengineer@gmail.com to make sure we only have a single copy.
-      root_path: /Workspace/Users/marcelo.cardozodataengineer@gmail.com/.bundle/${bundle.name}/${bundle.target}
+      host: https://dbc-62bdf2a3-1579.cloud.databricks.com
+      profile: FREE
+      # We explicitly deploy to /Workspace/Users/marcelocardozo.telecel@gmail.com to make sure we only have a single copy.
+      root_path: /Workspace/Users/marcelocardozo.telecel@gmail.com/.bundle/${bundle.name}/${bundle.target}
     variables:
       catalog: workspace
       schema: prod
     permissions:
-      - user_name: marcelo.cardozodataengineer@gmail.com
+      - user_name: marcelocardozo.telecel@gmail.com
         level: CAN_MANAGE

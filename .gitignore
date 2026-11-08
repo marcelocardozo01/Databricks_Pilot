@@ -8,3 +8,7 @@ scratch/**
 !scratch/README.md
 **/explorations/**
 **/!explorations/README.md
+
+# Ferramentas de IA locais (nao fazem parte do projeto)
+.claude/
+.ai-dev-kit/

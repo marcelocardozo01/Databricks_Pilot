@@ -1,0 +1,16 @@
+# Pipeline medalhão (Lakeflow Declarative Pipelines) para Databricks_Pilot.
+# Camadas: bronze (bruto) -> silver (limpo/validado) -> gold (agregado para consumo).
+resources:
+  pipelines:
+    medallion_pipeline:
+      name: medallion_pipeline
+      serverless: true
+      catalog: ${var.catalog}
+      schema: ${var.schema}
+      root_path: "../src/pipelines/medallion"
+      libraries:
+        - glob:
+            include: ../src/pipelines/medallion/transformations/**
+      configuration:
+        # Fonte da camada bronze. Troque por sua tabela/volume quando tiver dados reais.
+        source_table: samples.nyctaxi.trips

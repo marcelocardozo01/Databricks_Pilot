@@ -1,0 +1,19 @@
+# Job que orquestra o pipeline medalhão.
+resources:
+  jobs:
+    medallion_job:
+      name: medallion_job
+
+      trigger:
+        periodic:
+          interval: 1
+          unit: DAYS
+
+      #email_notifications:
+      #  on_failure:
+      #    - your_email@example.com
+
+      tasks:
+        - task_key: refresh_medallion
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.medallion_pipeline.id}
