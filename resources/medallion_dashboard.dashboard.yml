@@ -1,0 +1,10 @@
+# Dashboard AI/BI que consome as camadas silver e gold do pipeline medalhão.
+resources:
+  dashboards:
+    medallion_dashboard:
+      display_name: "Medalhão NYC Taxi"
+      file_path: ../src/dashboards/medallion.lvdash.json
+      warehouse_id: ${var.warehouse_id}
+      # Catálogo/schema padrão das consultas: permite usar só o nome da tabela no JSON.
+      dataset_catalog: ${var.catalog}
+      dataset_schema: ${var.schema}

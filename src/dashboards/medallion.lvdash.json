@@ -1,0 +1,297 @@
+{
+  "datasets": [
+    {
+      "name": "ds_trips",
+      "displayName": "Corridas (silver_trips)",
+      "queryLines": [
+        "SELECT pickup_at, pickup_date, pickup_hour, fare_amount, trip_distance, trip_minutes, pickup_zip\n",
+        "FROM silver_trips"
+      ]
+    },
+    {
+      "name": "ds_daily",
+      "displayName": "Receita diária (gold_daily_revenue)",
+      "queryLines": [
+        "SELECT pickup_date, trips, total_fare, avg_fare, avg_distance, avg_trip_minutes\n",
+        "FROM gold_daily_revenue\n",
+        "ORDER BY pickup_date"
+      ]
+    },
+    {
+      "name": "ds_zip",
+      "displayName": "Top CEPs (gold_pickup_zip_stats)",
+      "queryLines": [
+        "SELECT pickup_zip, trips, total_fare, avg_distance, avg_fare_per_mile\n",
+        "FROM gold_pickup_zip_stats\n",
+        "ORDER BY total_fare DESC\n",
+        "LIMIT 15"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "overview",
+      "displayName": "Visão geral",
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1",
+      "layout": [
+        {
+          "widget": {
+            "name": "header",
+            "multilineTextboxSpec": {
+              "lines": [
+                "# Corridas de táxi NYC — arquitetura medalhão\n",
+                "\n",
+                "KPIs e gráfico por hora lidos da camada **silver**; receita diária e ranking de CEPs lidos da camada **gold**. Clique em uma barra ou ponto para filtrar os demais widgets."
+              ]
+            }
+          },
+          "position": {"x": 0, "y": 0, "width": 12, "height": 2}
+        },
+        {
+          "widget": {
+            "name": "kpi-trips",
+            "queries": [{
+              "name": "main_query",
+              "query": {
+                "datasetName": "ds_trips",
+                "fields": [
+                  {"name": "count(*)", "expression": "COUNT(*)"},
+                  {"name": "daily(pickup_date)", "expression": "DATE_TRUNC(\"DAY\", `pickup_date`)"}
+                ],
+                "disaggregated": false
+              }
+            }],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "count(*)",
+                  "displayName": "Corridas",
+                  "format": {"type": "number", "abbreviation": "compact", "decimalPlaces": {"type": "max", "places": 1}}
+                },
+                "period": {"fieldName": "daily(pickup_date)"}
+              },
+              "frame": {"showTitle": true, "title": "Corridas válidas"}
+            }
+          },
+          "position": {"x": 0, "y": 2, "width": 3, "height": 3}
+        },
+        {
+          "widget": {
+            "name": "kpi-revenue",
+            "queries": [{
+              "name": "main_query",
+              "query": {
+                "datasetName": "ds_trips",
+                "fields": [
+                  {"name": "sum(fare_amount)", "expression": "SUM(`fare_amount`)"},
+                  {"name": "daily(pickup_date)", "expression": "DATE_TRUNC(\"DAY\", `pickup_date`)"}
+                ],
+                "disaggregated": false
+              }
+            }],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(fare_amount)",
+                  "displayName": "Receita",
+                  "format": {"type": "number-currency", "currencyCode": "USD", "abbreviation": "compact", "decimalPlaces": {"type": "max", "places": 2}}
+                },
+                "period": {"fieldName": "daily(pickup_date)"}
+              },
+              "frame": {"showTitle": true, "title": "Receita total"}
+            }
+          },
+          "position": {"x": 3, "y": 2, "width": 3, "height": 3}
+        },
+        {
+          "widget": {
+            "name": "kpi-avg-fare",
+            "queries": [{
+              "name": "main_query",
+              "query": {
+                "datasetName": "ds_trips",
+                "fields": [
+                  {"name": "avg(fare_amount)", "expression": "AVG(`fare_amount`)"},
+                  {"name": "daily(pickup_date)", "expression": "DATE_TRUNC(\"DAY\", `pickup_date`)"}
+                ],
+                "disaggregated": false
+              }
+            }],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "avg(fare_amount)",
+                  "displayName": "Tarifa média",
+                  "format": {"type": "number-currency", "currencyCode": "USD", "decimalPlaces": {"type": "max", "places": 2}}
+                },
+                "period": {"fieldName": "daily(pickup_date)"}
+              },
+              "frame": {"showTitle": true, "title": "Tarifa média"}
+            }
+          },
+          "position": {"x": 6, "y": 2, "width": 3, "height": 3}
+        },
+        {
+          "widget": {
+            "name": "kpi-avg-minutes",
+            "queries": [{
+              "name": "main_query",
+              "query": {
+                "datasetName": "ds_trips",
+                "fields": [
+                  {"name": "avg(trip_minutes)", "expression": "AVG(`trip_minutes`)"},
+                  {"name": "daily(pickup_date)", "expression": "DATE_TRUNC(\"DAY\", `pickup_date`)"}
+                ],
+                "disaggregated": false
+              }
+            }],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "avg(trip_minutes)",
+                  "displayName": "Duração média",
+                  "format": {"type": "number-plain", "decimalPlaces": {"type": "max", "places": 1}},
+                  "formatTemplate": "{{@formatted}} min"
+                },
+                "period": {"fieldName": "daily(pickup_date)"}
+              },
+              "frame": {"showTitle": true, "title": "Duração média"}
+            }
+          },
+          "position": {"x": 9, "y": 2, "width": 3, "height": 3}
+        },
+        {
+          "widget": {
+            "name": "daily-revenue-line",
+            "queries": [{
+              "name": "main_query",
+              "query": {
+                "datasetName": "ds_daily",
+                "fields": [
+                  {"name": "pickup_date", "expression": "`pickup_date`"},
+                  {"name": "total_fare", "expression": "`total_fare`"}
+                ],
+                "disaggregated": true
+              }
+            }],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {"fieldName": "pickup_date", "scale": {"type": "temporal"}, "displayName": "Data"},
+                "y": {
+                  "fieldName": "total_fare",
+                  "scale": {"type": "quantitative"},
+                  "displayName": "Receita (USD)",
+                  "format": {"type": "number-currency", "currencyCode": "USD", "abbreviation": "compact", "decimalPlaces": {"type": "max", "places": 1}}
+                }
+              },
+              "frame": {"showTitle": true, "title": "Receita diária (gold_daily_revenue)"}
+            }
+          },
+          "position": {"x": 0, "y": 5, "width": 8, "height": 6}
+        },
+        {
+          "widget": {
+            "name": "hourly-trips-bar",
+            "queries": [{
+              "name": "main_query",
+              "query": {
+                "datasetName": "ds_trips",
+                "fields": [
+                  {"name": "pickup_hour", "expression": "`pickup_hour`"},
+                  {"name": "count(*)", "expression": "COUNT(*)"}
+                ],
+                "disaggregated": false
+              }
+            }],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {"fieldName": "pickup_hour", "scale": {"type": "categorical"}, "displayName": "Hora do dia"},
+                "y": {"fieldName": "count(*)", "scale": {"type": "quantitative"}, "displayName": "Corridas"}
+              },
+              "frame": {"showTitle": true, "title": "Corridas por hora (silver_trips)"}
+            }
+          },
+          "position": {"x": 8, "y": 5, "width": 4, "height": 6}
+        },
+        {
+          "widget": {
+            "name": "zip-table",
+            "queries": [{
+              "name": "main_query",
+              "query": {
+                "datasetName": "ds_zip",
+                "fields": [
+                  {"name": "pickup_zip", "expression": "`pickup_zip`"},
+                  {"name": "trips", "expression": "`trips`"},
+                  {"name": "total_fare", "expression": "`total_fare`"},
+                  {"name": "avg_distance", "expression": "`avg_distance`"},
+                  {"name": "avg_fare_per_mile", "expression": "`avg_fare_per_mile`"}
+                ],
+                "disaggregated": true
+              }
+            }],
+            "spec": {
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {"fieldName": "pickup_zip", "displayName": "CEP embarque"},
+                  {"fieldName": "trips", "displayName": "Corridas"},
+                  {"fieldName": "total_fare", "displayName": "Receita (USD)", "format": {"type": "number-currency", "currencyCode": "USD", "decimalPlaces": {"type": "max", "places": 2}}},
+                  {"fieldName": "avg_distance", "displayName": "Distância média (mi)"},
+                  {"fieldName": "avg_fare_per_mile", "displayName": "USD por milha"}
+                ]
+              },
+              "frame": {"showTitle": true, "title": "Top 15 CEPs por receita (gold_pickup_zip_stats)"}
+            }
+          },
+          "position": {"x": 0, "y": 11, "width": 7, "height": 7}
+        },
+        {
+          "widget": {
+            "name": "zip-revenue-bar",
+            "queries": [{
+              "name": "main_query",
+              "query": {
+                "datasetName": "ds_zip",
+                "fields": [
+                  {"name": "pickup_zip", "expression": "`pickup_zip`"},
+                  {"name": "total_fare", "expression": "`total_fare`"}
+                ],
+                "disaggregated": true
+              }
+            }],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "total_fare",
+                  "scale": {"type": "quantitative"},
+                  "displayName": "Receita (USD)",
+                  "format": {"type": "number-currency", "currencyCode": "USD", "abbreviation": "compact", "decimalPlaces": {"type": "max", "places": 1}}
+                },
+                "y": {"fieldName": "pickup_zip", "scale": {"type": "categorical", "sort": {"by": "value"}}, "displayName": "CEP"}
+              },
+              "frame": {"showTitle": true, "title": "Receita por CEP de embarque"}
+            }
+          },
+          "position": {"x": 7, "y": 11, "width": 5, "height": 7}
+        }
+      ]
+    }
+  ]
+}

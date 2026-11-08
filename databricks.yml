@@ -13,6 +13,9 @@ variables:
     description: The catalog to use
   schema:
     description: The schema to use
+  warehouse_id:
+    description: SQL warehouse que executa o dashboard
+    default: 758a2b47b6827977
 
 targets:
   dev:
